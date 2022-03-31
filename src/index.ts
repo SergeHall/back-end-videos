@@ -20,7 +20,7 @@ let videos = [
 ]
 
 app.get('/', (req: Request, res: Response) => {
-    res.send('Hello: World!')
+    res.send('Hello World :)')
 })
 
 app.get('/videos', (req: Request, res: Response) => {
