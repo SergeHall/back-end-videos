@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Front-end</title>
+</head>
+<body>
+<h1>Front-end</h1>
+
+
+<button id="create_video">create</button>
+<label for="create_id"></label><input id="create_id" placeholder="new id"/>
+<label for="create_title"></label><input id="create_title" placeholder="new title"/>
+<label for="create_author"></label><input id="create_author" placeholder="new author"/>
+<hr>
+<button id="read_all_videos">read all vieos</button>
+<hr>
+<button id="read_single_video">read video by id</button>
+<label for="read_id"></label><input id="read_id" placeholder="videoId"/>
+<hr>
+<button id="update_video">update</button>
+<label for="update_id"></label><input id="update_id" placeholder="videoId"/>
+<label for="update_title"></label><input id="update_title" placeholder="new title"/>
+<hr>
+<button id="delete_video">delete</button>
+<label for="delete_id"></label><input id="delete_id" placeholder="videoId"/>
+<hr>
+
+
+<div id="result"></div>
+<script>
+  create_video.onclick = () => {
+    fetch('http://localhost:5000/videos', {
+      method: 'POST',
+      body: JSON.stringify({
+        id: create_id.value,
+        title: create_title.value,
+        author: create_author.value
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+      .then(res => res.json())
+      .then(data => result.innerHTML = JSON.stringify(data))
+
+  }
+  read_all_videos.onclick = () => {
+    fetch('http://localhost:5000/videos')
+      .then(res => res.json())
+      .then(data => result.innerHTML = JSON.stringify(data))
+  }
+  read_single_video.onclick = () => {
+    fetch('http://localhost:5000/videos/' + read_id.value)
+      .then(res => res.json())
+      .then(data => result.innerHTML = JSON.stringify(data))
+  }
+
+  update_video.onclick = () => {
+    fetch('http://localhost:5000/videos/' + update_id.value, {
+      method: 'PUT',
+      body: JSON.stringify({title: update_title.value}),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+      .then(res => res.json())
+      .then(data => result.innerHTML = JSON.stringify(data))
+  }
+  delete_video.onclick = () => {
+    fetch('http://localhost:5000/videos/' + delete_id.value, {
+      method: 'DELETE'
+    })
+  }
+</script>
+</body>
+</html>
