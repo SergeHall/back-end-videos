@@ -3,7 +3,6 @@ import cors from 'cors'
 import bodyParser from 'body-parser'
 
 const app = express()
-
 const corsMiddleware = cors()
 app.use(corsMiddleware)
 
@@ -21,7 +20,7 @@ let videos = [
 ]
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World :):):)')
+  res.send('Hello World :)')
 })
 
 app.get('/videos', (req: Request, res: Response) => {
@@ -29,50 +28,55 @@ app.get('/videos', (req: Request, res: Response) => {
 })
 app.post('/videos', (req: Request, res: Response) => {
   try {
-    const id = +req.body.id
+    const id = req.body.id
     const checkId = videos.find(i => i.id === id);
-
-    if (checkId === undefined && !isNaN(id)) {
+    console.log("--->", id, "--->", checkId)
+    if (checkId === undefined && !isNaN(id) && id !== "") {
       const newVideo = {
         id: +req.body.id,
         title: req.body.title,
         author: req.body.author
       }
       videos.push(newVideo)
-      res.send(newVideo)
-      // res.sendStatus(201) // получаю такую ошибку Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+      res.send(newVideo) // по докум должно возращать код 201 в браузере я получвю код 200
+      // не знаю как исправить или правильно настроит
     } else {
       res.sendStatus(400)
     }
   } catch (error) {
-    const er: any = error
-    return res.status(500).send(er)
+    return res.sendStatus(500).send(error)
   }
 })
 
 app.put('/videos/:videoId', (req: Request, res: Response) => {
   try {
-    const id = +req.params.videoId;
-    const video = videos.find(v => v.id === id)
+    const id = req.params.videoId;
+    const video = videos.find(v => v.id === +id)
+
     if (video) {
       video.title = req.body.title
       res.send(video)
-    } else {
-      res.sendStatus(200)
+    } else if (!Number(id)) {
+      res.sendStatus(400)
+    } else if (!video) {    // I didn't figure out how to fix it
+      res.sendStatus(404)
     }
   } catch (error) {
-    const er: any = error
-    return res.status(500).send(er)
+    return res.sendStatus(500).send(error)
   }
 })
 
 app.get('/videos/:videoId', (req: Request, res: Response) => {
-  const id = +req.params.videoId;
-  const video = videos.find(v => v.id === id)
-  if (video !== undefined) {
-    res.send(video)
-  } else {
-    res.sendStatus(404)
+  try {
+    const id = +req.params.videoId;
+    const video = videos.find(v => v.id === id)
+    if (video !== undefined) {
+      res.send(video)
+    } else {
+      res.sendStatus(404)
+    }
+  } catch (error) {
+    return res.sendStatus(500)
   }
 })
 

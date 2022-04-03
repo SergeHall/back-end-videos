@@ -7,13 +7,12 @@
 <body>
 <h1>Front-end</h1>
 
-
+<button id="read_all_videos">read all vieos</button>
+<hr>
 <button id="create_video">create</button>
 <label for="create_id"></label><input id="create_id" placeholder="new id"/>
 <label for="create_title"></label><input id="create_title" placeholder="new title"/>
 <label for="create_author"></label><input id="create_author" placeholder="new author"/>
-<hr>
-<button id="read_all_videos">read all vieos</button>
 <hr>
 <button id="read_single_video">read video by id</button>
 <label for="read_id"></label><input id="read_id" placeholder="videoId"/>
@@ -29,6 +28,18 @@
 
 <div id="result"></div>
 <script>
+  read_all_videos.onclick = () => {
+    fetch('http://localhost:5000/videos')
+      .then(res => res.json())
+      .then(data => result.innerHTML = JSON.stringify(data))
+  }
+
+  read_single_video.onclick = () => {
+    fetch('http://localhost:5000/videos/' + read_id.value)
+      .then(res => res.json())
+      .then(data => result.innerHTML = JSON.stringify(data))
+  }
+
   create_video.onclick = () => {
     fetch('http://localhost:5000/videos', {
       method: 'POST',
@@ -44,16 +55,6 @@
       .then(res => res.json())
       .then(data => result.innerHTML = JSON.stringify(data))
 
-  }
-  read_all_videos.onclick = () => {
-    fetch('http://localhost:5000/videos')
-      .then(res => res.json())
-      .then(data => result.innerHTML = JSON.stringify(data))
-  }
-  read_single_video.onclick = () => {
-    fetch('http://localhost:5000/videos/' + read_id.value)
-      .then(res => res.json())
-      .then(data => result.innerHTML = JSON.stringify(data))
   }
 
   update_video.onclick = () => {
