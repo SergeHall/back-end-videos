@@ -18,7 +18,7 @@ app.use(jsonBodeMiddleware.json())
 const PORT = process.env.PORT || 5000
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World :)')
+  res.send('Back-end, middleware, repositories, routers')
 })
 
 app.use('/videos', videosRouter)
