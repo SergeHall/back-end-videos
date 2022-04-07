@@ -12,8 +12,8 @@ const corsMiddleware = cors()
 app.use(corsMiddleware)
 app.use(authMiddleware)
 
-const jsonBodeMiddleware = bodyParser
-app.use(jsonBodeMiddleware.json())
+const jsonBodyMiddleware = bodyParser
+app.use(jsonBodyMiddleware.json())
 
 const PORT = process.env.PORT || 5000
 
@@ -24,6 +24,6 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/videos', videosRouter)
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port: ${PORT}`)
+  console.log(`Back-end-videos app listening on port: ${PORT}`)
 })
 

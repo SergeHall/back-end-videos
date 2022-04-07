@@ -17,7 +17,7 @@ videosRouter.get('/', (req: Request, res: Response) => {
     const author = req.body.author;
     const createVideo = videosRepository.createVideo(id, title, author)
 
-    if (createVideo === null || createVideo === false) {
+    if (!id || title.length < 1 || title.length > 40 || !author || createVideo === null || createVideo === false) {
       res.sendStatus(400)
       return;
     }
