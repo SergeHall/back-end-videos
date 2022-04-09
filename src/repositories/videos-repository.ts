@@ -68,7 +68,7 @@ export const videosRepository = {
     if (video) {
       errFlag = true;
       allErrors.errorsMessages.push({
-        message: "such an id already exists",
+        "message": "such an id already exists",
         field: "id"
       })
     }
