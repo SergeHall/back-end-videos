@@ -43,7 +43,7 @@ export const videosRepository = {
         "field": "id"
       })
     }
-    if (title.length < 1 || title.length > 30) {
+    if (title.length < 1 || title.length > 40) {
       errFlag = true;
       allErrors.errorsMessages.push({
         "message": "Bad input title has incorrect values",
@@ -72,14 +72,14 @@ export const videosRepository = {
         field: "id"
       })
     }
-    if (title.length < 1 || title.length > 30) {
+    if (title.length < 1 || title.length > 40) {
       errFlag = true;
       allErrors.errorsMessages.push({
         "message": "Bad input title has incorrect values",
         "field": "new title"
       })
     }
-    if (author.length < 1 || author.length > 30) {
+    if (author.length < 1 || author.length > 40) {
       errFlag = true;
       allErrors.errorsMessages.push({
         "message": "Bad input author has incorrect values",

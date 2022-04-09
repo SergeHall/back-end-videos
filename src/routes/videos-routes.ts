@@ -1,8 +1,6 @@
 import {Request, Response, Router} from 'express'
 import {videosRepository} from "../repositories/videos-repository";
 
-
-// put here array with videos
 export const videosRouter = Router({})
 
 videosRouter.get('/', (req: Request, res: Response) => {
@@ -61,7 +59,7 @@ videosRouter.get('/', (req: Request, res: Response) => {
       const video = videosRepository.getVideoById(id)
       if (video) {
         if (video.hasOwnProperty("errorsMessages")) {
-          res.status(400)
+          res.status(404)
           res.send(video);
           return
         }
