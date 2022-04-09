@@ -13,7 +13,7 @@ export const videosRepository = {
 
   getVideoById(id: number) {
     const video = videos.find(v => v.id === id)
-    const allErrors = {errorsMessages: [] as any};
+    const allErrors = {errorsMessages: [{}]};
     let errFlag = false;
 
     if (!video || isNaN(id)) {
@@ -33,7 +33,7 @@ export const videosRepository = {
 
   updateVideoById(id: number, title: string) {
     const video = videos.find(v => v.id === id)
-    const allErrors = {errorsMessages: [] as any};
+    const allErrors = {errorsMessages: [{}]};
     let errFlag = false;
 
     if (!video || isNaN(id)) {
@@ -62,7 +62,7 @@ export const videosRepository = {
 
   createVideo(id: number, title: string, author: string) {
     const video = videos.find(v => v.id === id)
-    const allErrors = {errorsMessages: [] as any};
+    const allErrors = {errorsMessages: [{}]};
     let errFlag = false;
 
     if (video) {
