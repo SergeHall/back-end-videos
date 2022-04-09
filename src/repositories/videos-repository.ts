@@ -6,6 +6,16 @@ let videos = [
   {id: 5, title: 'About JS - 05', author: 'it-incubator.eu'},
 ]
 
+const idDoesNotExist = {
+  "message": "such an id does not exist",
+  "field": "id"
+}
+
+const titleHasIncorrect = {
+  "message": "input title has incorrect values",
+  "field": "title"
+}
+
 export const videosRepository = {
   getVideos() {
     return videos
@@ -13,18 +23,21 @@ export const videosRepository = {
 
   getVideoById(id: number) {
     const video = videos.find(v => v.id === id)
-    const allErrors = {errorsMessages: [{}]};
+    const allErrors = {errorsMessages: [] as any};
     let errFlag = false;
-
+    console.log(id, "id")
     if (!video || isNaN(id)) {
       errFlag = true;
-      allErrors.errorsMessages.push({
-        "message": "such an id does not exist",
-        "field": "id"
-      })
+      allErrors.errorsMessages.push(idDoesNotExist)
     }
     if (errFlag) {
-      return allErrors;
+      return {
+        "data": {
+          "id": id,
+        },
+        "errorsMessages": allErrors.errorsMessages,
+        "resultCode": 0
+      }
     }
     if (video) {
       return video;
@@ -33,25 +46,26 @@ export const videosRepository = {
 
   updateVideoById(id: number, title: string) {
     const video = videos.find(v => v.id === id)
-    const allErrors = {errorsMessages: [{}]};
+    const allErrors = {errorsMessages: [] as any};
     let errFlag = false;
 
     if (!video || isNaN(id)) {
       errFlag = true;
-      allErrors.errorsMessages.push({
-        "message": "such an id does not exist",
-        "field": "id"
-      })
+      allErrors.errorsMessages.push(idDoesNotExist)
     }
     if (title.length < 1 || title.length > 40) {
       errFlag = true;
-      allErrors.errorsMessages.push({
-        "message": "Bad input title has incorrect values",
-        "field": "new title"
-      })
+      allErrors.errorsMessages.push(titleHasIncorrect)
     }
     if (errFlag) {
-      return allErrors;
+      return {
+        "data": {
+          "id": id,
+          "title": title,
+        },
+        "errorsMessages": allErrors.errorsMessages,
+        "resultCode": 0
+      }
     }
 
     if (video) {
@@ -62,7 +76,7 @@ export const videosRepository = {
 
   createVideo(id: number, title: string, author: string) {
     const video = videos.find(v => v.id === id)
-    const allErrors = {errorsMessages: [{}]};
+    const allErrors = {errorsMessages: [] as any};
     let errFlag = false;
 
     if (video) {
@@ -75,20 +89,28 @@ export const videosRepository = {
     if (title.length < 1 || title.length > 40) {
       errFlag = true;
       allErrors.errorsMessages.push({
-        "message": "Bad input title has incorrect values",
+        "message": "Bad input new title has incorrect values",
         "field": "new title"
       })
     }
     if (author.length < 1 || author.length > 40) {
       errFlag = true;
       allErrors.errorsMessages.push({
-        "message": "Bad input author has incorrect values",
+        "message": "Bad input new author has incorrect values",
         "field": "new author"
       })
     }
 
     if (errFlag) {
-      return allErrors
+      return {
+        "data": {
+          "id": id,
+          "title": title,
+          "author": author
+        },
+        "errorsMessages": allErrors.errorsMessages,
+        "resultCode": 0
+      }
 
     } else {
       const newVideo = {id: +id, title: title, author: author}
