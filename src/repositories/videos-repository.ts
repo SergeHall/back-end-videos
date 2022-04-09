@@ -6,14 +6,24 @@ let videos = [
   {id: 5, title: 'About JS - 05', author: 'it-incubator.eu'},
 ]
 
+type ErrorType = {
+  "message": string
+  "field": string
+}
+type ErrArrayType = {
+  errorsMessages: Array<ErrorType>
+}
 const idDoesNotExist = {
   "message": "such an id does not exist",
   "field": "id"
 }
-
 const titleHasIncorrect = {
   "message": "input title has incorrect values",
   "field": "title"
+}
+const authorHasIncorrect = {
+  "message": "Bad input new author has incorrect values",
+  "field": "new author"
 }
 
 export const videosRepository = {
@@ -23,7 +33,7 @@ export const videosRepository = {
 
   getVideoById(id: number) {
     const video = videos.find(v => v.id === id)
-    const allErrors = {errorsMessages: [] as any};
+    const allErrors: ErrArrayType = {errorsMessages: []};
     let errFlag = false;
     console.log(id, "id")
     if (!video || isNaN(id)) {
@@ -46,7 +56,7 @@ export const videosRepository = {
 
   updateVideoById(id: number, title: string) {
     const video = videos.find(v => v.id === id)
-    const allErrors = {errorsMessages: [] as any};
+    const allErrors: ErrArrayType = {errorsMessages: []};
     let errFlag = false;
 
     if (!video || isNaN(id)) {
@@ -76,29 +86,20 @@ export const videosRepository = {
 
   createVideo(id: number, title: string, author: string) {
     const video = videos.find(v => v.id === id)
-    const allErrors = {errorsMessages: [] as any};
+    const allErrors: ErrArrayType = {errorsMessages: []};
     let errFlag = false;
 
     if (video) {
       errFlag = true;
-      allErrors.errorsMessages.push({
-        "message": "such an id already exists",
-        field: "id"
-      })
+      allErrors.errorsMessages.push(idDoesNotExist)
     }
     if (title.length < 1 || title.length > 40) {
       errFlag = true;
-      allErrors.errorsMessages.push({
-        "message": "Bad input new title has incorrect values",
-        "field": "new title"
-      })
+      allErrors.errorsMessages.push(titleHasIncorrect)
     }
     if (author.length < 1 || author.length > 40) {
       errFlag = true;
-      allErrors.errorsMessages.push({
-        "message": "Bad input new author has incorrect values",
-        "field": "new author"
-      })
+      allErrors.errorsMessages.push(authorHasIncorrect)
     }
 
     if (errFlag) {
