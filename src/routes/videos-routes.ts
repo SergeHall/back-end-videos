@@ -11,64 +11,79 @@ videosRouter.get('/', (req: Request, res: Response) => {
 })
 
   .post('/', (req: Request, res: Response) => {
-  try {
-    const id = +req.body.id;
-    const title = req.body.title;
-    const author = req.body.author;
-    const createVideo = videosRepository.createVideo(id, title, author)
+    try {
+      const id = +(new Date());
+      const title = req.body.title;
+      const author = req.body.author;
+      const createVideo = videosRepository.createVideo(id, title, author)
 
-    if (!id || title.length < 1 || title.length > 40 || !author || createVideo === null || createVideo === false) {
-      res.sendStatus(400)
-      return;
+      if (createVideo.hasOwnProperty("errorsMessages")) {
+        res.status(400)
+        res.send(createVideo);
+        return
+      }
+      if (createVideo) {
+        res.status(201);
+        res.send(createVideo);
+        return
+      }
+    } catch (error) {
+      return res.sendStatus(500)
     }
-    res.send(createVideo)
-
-  } catch (error) {
-    return res.sendStatus(500)
-  }
-})
+  })
 
   .put('/:videoId', (req: Request, res: Response) => {
-  try {
-    const id = +req.params.videoId;
-    if (!Number(id)) {
-      res.sendStatus(400)
-      return;
-    }
-    const title = req.body.title;
-    const updatedVideo = videosRepository.updateVideoById(id, title)
+    try {
+      const id = +req.params.videoId;
+      const title = req.body.title;
+      const updateVideo = videosRepository.updateVideoById(id, title)
 
-    if (updatedVideo) {
-      res.send(updatedVideo)
-    } else {
-      res.sendStatus(404)
+      if (updateVideo) {
+        if (updateVideo.hasOwnProperty("errorsMessages")) {
+          res.status(400)
+          res.send(updateVideo);
+          return
+        }
+        if (updateVideo) {
+          res.status(200);
+          res.send(updateVideo);
+          return
+        }
+      }
+    } catch (error) {
+      return res.sendStatus(500)
     }
-  } catch (error) {
-    return res.sendStatus(500)
-  }
-})
+  })
 
   .get('/:videoId', (req: Request, res: Response) => {
-  try {
-    const id = +req.params.videoId;
-    const video = videosRepository.getVideoById(id)
-    if (video !== undefined) {
-      res.send(video)
+    try {
+      const id = +req.params.videoId;
+      const video = videosRepository.getVideoById(id)
+      if (video) {
+        if (video.hasOwnProperty("errorsMessages")) {
+          res.status(400)
+          res.send(video);
+          return
+        }
+        if (video) {
+          res.status(200);
+          res.send(video);
+          return
+        }
+      }
+    } catch (error) {
+      return res.sendStatus(500)
+    }
+  })
+
+  .delete('/:videoId', (req: Request, res: Response) => {
+    const id = +req.params.videoId
+    const isDeleted = videosRepository.deleteVideoById(id)
+
+    if (isDeleted) {
+      res.sendStatus(204)
     } else {
       res.sendStatus(404)
     }
-  } catch (error) {
-    return res.sendStatus(500)
-  }
-})
 
-  .delete('/:videoId', (req: Request, res: Response) => {
-  const id = +req.params.videoId
-  const isDeleted = videosRepository.deleteVideoById(id)
-
-  if (isDeleted) {
-    res.sendStatus(204)
-  } else {
-    res.sendStatus(404)
-  }
-})
+  })

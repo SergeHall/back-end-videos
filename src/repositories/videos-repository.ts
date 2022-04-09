@@ -12,40 +12,100 @@ export const videosRepository = {
   },
 
   getVideoById(id: number) {
-    return videos.find(v => v.id === +id)
+    const video = videos.find(v => v.id === id)
+    const allErrors = {errorsMessages: [] as any};
+    let errFlag = false;
+
+    if (!video || isNaN(id)) {
+      errFlag = true;
+      allErrors.errorsMessages.push({
+        "message": "such an id does not exist",
+        "field": "id"
+      })
+    }
+    if (errFlag) {
+      return allErrors;
+    }
+    if (video) {
+      return video;
+    }
+  },
+
+  updateVideoById(id: number, title: string) {
+    const video = videos.find(v => v.id === id)
+    const allErrors = {errorsMessages: [] as any};
+    let errFlag = false;
+
+    if (!video || isNaN(id)) {
+      errFlag = true;
+      allErrors.errorsMessages.push({
+        "message": "such an id does not exist",
+        "field": "id"
+      })
+    }
+    if (title.length < 1 || title.length > 30) {
+      errFlag = true;
+      allErrors.errorsMessages.push({
+        "message": "Bad input title has incorrect values",
+        "field": "new title"
+      })
+    }
+    if (errFlag) {
+      return allErrors;
+    }
+
+    if (video) {
+      video.title = title
+      return video;
+    }
+  },
+
+  createVideo(id: number, title: string, author: string) {
+    const video = videos.find(v => v.id === id)
+    const allErrors = {errorsMessages: [] as any};
+    let errFlag = false;
+
+    if (video) {
+      errFlag = true;
+      allErrors.errorsMessages.push({
+        message: "such an id already exists",
+        field: "id"
+      })
+    }
+    if (title.length < 1 || title.length > 30) {
+      errFlag = true;
+      allErrors.errorsMessages.push({
+        "message": "Bad input title has incorrect values",
+        "field": "new title"
+      })
+    }
+    if (author.length < 1 || author.length > 30) {
+      errFlag = true;
+      allErrors.errorsMessages.push({
+        "message": "Bad input author has incorrect values",
+        "field": "new author"
+      })
+    }
+
+    if (errFlag) {
+      return allErrors
+
+    } else {
+      const newVideo = {id: +id, title: title, author: author}
+      videos.push(newVideo)
+      return newVideo;
+    }
   },
 
   deleteVideoById(id: number) {
-    const newVideo = videos.filter(v => v.id === id)
-    if (videos.filter(v => v.id === id) && videos.indexOf(newVideo[0]) !== -1) {
-      const newV = videos.indexOf(newVideo[0]);
+    const video = videos.filter(v => v.id === id)
+
+    if (videos.filter(v => v.id === id) && videos.indexOf(video[0]) !== -1) {
+      const newV = videos.indexOf(video[0]);
       videos.splice(newV, 1);
       return true
     } else {
       return false
     }
   },
-
-  updateVideoById(id: number, title: string) {
-    const video = videos.find(v => v.id === +id)
-    if (video) {
-      video.title = title
-      return video;
-    } else {
-      return null
-    }
-  },
-
-  createVideo(id: number, title: string, author: string) {
-    const video = videos.find(v => v.id === id)
-    if (isNaN(id) || "" + id === "") {
-      return false
-    } else if (video) {
-      return null
-    } else {
-      const newVideo = {id: +id, title: title, author: author}
-      videos.push(newVideo)
-      return newVideo;
-    }
-  }
 }
