@@ -6,24 +6,30 @@ let videos = [
   {id: 5, title: 'About JS - 05', author: 'it-incubator.eu'},
 ]
 
+
 type ErrorType = {
   "message": string
   "field": string
 }
-type ErrArrayType = {
-  errorsMessages: Array<ErrorType>
+type ArrayType = {
+  "errorsMessages": Array<ErrorType>
 }
+
 const idDoesNotExist = {
-  "message": "such an id does not exist",
-  "field": "id"
+  message: "such an id does not exist",
+  field: "id"
+}
+const idIncorrect = {
+  message: "such an id has incorrect values",
+  field: "id"
 }
 const titleHasIncorrect = {
-  "message": "input title has incorrect values",
-  "field": "title"
+  message: "input title has incorrect values",
+  field: "title"
 }
 const authorHasIncorrect = {
-  "message": "Bad input new author has incorrect values",
-  "field": "new author"
+  message: "Bad input new author has incorrect values",
+  field: "new author"
 }
 
 export const videosRepository = {
@@ -33,73 +39,65 @@ export const videosRepository = {
 
   getVideoById(id: number) {
     const video = videos.find(v => v.id === id)
-    const allErrors: ErrArrayType = {errorsMessages: []};
-    let errFlag = false;
-    console.log(id, "id")
-    if (!video || isNaN(id)) {
-      errFlag = true;
-      allErrors.errorsMessages.push(idDoesNotExist)
-    }
-    if (errFlag) {
+
+    if (video) {
+      return video;
+    } else {
+      const errors: ArrayType = {errorsMessages: []};
+
+      errors.errorsMessages.push(idDoesNotExist)
       return {
         "data": {
           "id": id,
         },
-        "errorsMessages": allErrors.errorsMessages,
-        "resultCode": 0
+        "errorsMessages": errors.errorsMessages,
+        "resultCode": 1
       }
-    }
-    if (video) {
-      return video;
     }
   },
 
-  updateVideoById(id: number, title: string) {
-    const video = videos.find(v => v.id === id)
-    const allErrors: ErrArrayType = {errorsMessages: []};
-    let errFlag = false;
+  updateVideoById(id: string, title: string) {
+    const video = videos.find(v => v.id === +id)
+    const errors: ArrayType = {errorsMessages: []};
 
-    if (!video || isNaN(id)) {
-      errFlag = true;
-      allErrors.errorsMessages.push(idDoesNotExist)
-    }
-    if (title.length < 1 || title.length > 40) {
-      errFlag = true;
-      allErrors.errorsMessages.push(titleHasIncorrect)
-    }
-    if (errFlag) {
-      return {
-        "data": {
-          "id": id,
-          "title": title,
-        },
-        "errorsMessages": allErrors.errorsMessages,
-        "resultCode": 0
-      }
-    }
-
-    if (video) {
+    if (video && title.length >= 4 && title.length <= 40) {
       video.title = title
-      return video;
+    }
+    if (title.length < 4 || title.length > 40) {
+      errors.errorsMessages.push(titleHasIncorrect)
+    }
+    if (!video && !isNaN(+id)) {
+      errors.errorsMessages.push(idDoesNotExist)
+    }
+    if (isNaN(+id)) {
+      errors.errorsMessages.push(idIncorrect)
+    }
+    return {
+      data: {
+        id: id,
+        title: title
+      },
+      errorsMessages: errors.errorsMessages,
+      "resultCode": 1
     }
   },
 
   createVideo(id: number, title: string, author: string) {
     const video = videos.find(v => v.id === id)
-    const allErrors: ErrArrayType = {errorsMessages: []};
+    const errors: ArrayType = {errorsMessages: []};
     let errFlag = false;
 
     if (video) {
       errFlag = true;
-      allErrors.errorsMessages.push(idDoesNotExist)
+      errors.errorsMessages.push(idDoesNotExist)
     }
-    if (title.length < 1 || title.length > 40) {
+    if (title.length < 4 || title.length > 40) {
       errFlag = true;
-      allErrors.errorsMessages.push(titleHasIncorrect)
+      errors.errorsMessages.push(titleHasIncorrect)
     }
-    if (author.length < 1 || author.length > 40) {
+    if (author.length < 4 || author.length > 40) {
       errFlag = true;
-      allErrors.errorsMessages.push(authorHasIncorrect)
+      errors.errorsMessages.push(authorHasIncorrect)
     }
 
     if (errFlag) {
@@ -109,8 +107,8 @@ export const videosRepository = {
           "title": title,
           "author": author
         },
-        "errorsMessages": allErrors.errorsMessages,
-        "resultCode": 0
+        errorsMessages: errors.errorsMessages,
+        "resultCode": 1
       }
 
     } else {

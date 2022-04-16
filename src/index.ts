@@ -1,8 +1,6 @@
 import express, {Request, Response} from 'express'
 import cors from 'cors'
 import bodyParser from 'body-parser'
-import {videosRepository} from "./repositories/videos-repository";
-import {get} from "http";
 import {videosRouter} from "./routes/videos-routes";
 import {authMiddleware} from "./middlewares/auth-middleware";
 

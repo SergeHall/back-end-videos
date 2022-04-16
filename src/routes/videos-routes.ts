@@ -32,20 +32,31 @@ videosRouter.get('/', (req: Request, res: Response) => {
 
   .put('/:videoId', (req: Request, res: Response) => {
     try {
-      const id = +req.params.videoId;
+      const id = req.params.videoId;
       const title = req.body.title;
-      const updateVideo = videosRepository.updateVideoById(id, title)
+      let updateVideo = videosRepository.updateVideoById(id, title)
 
-      if (updateVideo) {
-        if (updateVideo.hasOwnProperty("errorsMessages")) {
-          res.status(400)
-          res.send(updateVideo);
-          return
-        }
-        if (updateVideo) {
-          res.status(200);
-          res.send(updateVideo);
-          return
+      if (updateVideo.errorsMessages.length === 0) {
+        res.status(204);
+        res.send(updateVideo);
+        return
+      } else {
+        for (let key in updateVideo) {
+          if (updateVideo.errorsMessages.length > 0) {
+            for (let k in updateVideo.errorsMessages) {
+              if (updateVideo.errorsMessages[k].message === 'such an id does not exist') {
+                res.status(404);
+                res.send(updateVideo);
+                return;
+              }
+              if (updateVideo.errorsMessages[k].message === 'such an id has incorrect values' ||
+                updateVideo.errorsMessages[k].message === 'input title has incorrect values') {
+                res.status(400);
+                res.send(updateVideo);
+                return;
+              }
+            }
+          }
         }
       }
     } catch (error) {
@@ -57,17 +68,15 @@ videosRouter.get('/', (req: Request, res: Response) => {
     try {
       const id = +req.params.videoId;
       const video = videosRepository.getVideoById(id)
-      if (video) {
-        if (video.hasOwnProperty("errorsMessages")) {
-          res.status(404)
-          res.send(video);
-          return
-        }
-        if (video) {
-          res.status(200);
-          res.send(video);
-          return
-        }
+
+      if (video.hasOwnProperty("errorsMessages")) {
+        res.status(404)
+        res.send(video);
+        return
+      }else {
+        res.status(200);
+        res.send(video);
+        return
       }
     } catch (error) {
       return res.sendStatus(500)
@@ -79,9 +88,8 @@ videosRouter.get('/', (req: Request, res: Response) => {
     const isDeleted = videosRepository.deleteVideoById(id)
 
     if (isDeleted) {
-      res.sendStatus(204)
+      res.status(204).send()
     } else {
-      res.sendStatus(404)
+      res.status(404).send()
     }
-
   })
