@@ -35,25 +35,22 @@ videosRouter.get('/', (req: Request, res: Response) => {
       const id = req.params.videoId;
       const title = req.body.title;
       let updateVideo = videosRepository.updateVideoById(id, title)
-
       if (updateVideo.errorsMessages.length === 0) {
         res.status(204);
         res.send(updateVideo);
         return
       } else {
-        for (let key in updateVideo) {
-          for (let k in updateVideo.errorsMessages) {
-            if (updateVideo.errorsMessages[k].message === 'such an id does not exist') {
-              res.status(404);
-              res.send(updateVideo);
-              return;
-            }
-            if (updateVideo.errorsMessages[k].message === 'such an id has incorrect values' ||
-              updateVideo.errorsMessages[k].message === 'input title has incorrect values') {
-              res.status(400);
-              res.send(updateVideo);
-              return;
-            }
+        for (let k in updateVideo.errorsMessages) {
+          if (updateVideo.errorsMessages[k].message === 'such an id does not exist') {
+            res.status(404);
+            res.send(updateVideo);
+            return;
+          }
+          if (updateVideo.errorsMessages[k].message === 'such an id has incorrect values' ||
+            updateVideo.errorsMessages[k].message === 'input title has incorrect values') {
+            res.status(400);
+            res.send(updateVideo);
+            return;
           }
         }
       }

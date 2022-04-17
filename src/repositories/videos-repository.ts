@@ -59,24 +59,23 @@ export const videosRepository = {
   updateVideoById(id: string, title: string) {
     const video = videos.find(v => v.id === +id)
     const errors: ArrayType = {errorsMessages: []};
-    let currentAuthor;
+    let currentAuthor = "";
 
     if (video) {
       currentAuthor = video.author
     }
-    console.log("--", title.length < 4, title.length > 40, currentAuthor)
 
     if (video && title.length >= 4 && title.length <= 40) {
       video.title = title
     }
-    if (title.length < 4 || title.length > 40) {
-      errors.errorsMessages.push(titleHasIncorrect)
+    if (isNaN(+id)) {
+      errors.errorsMessages.push(idIncorrect)
     }
     if (!video && !isNaN(+id)) {
       errors.errorsMessages.push(idDoesNotExist)
     }
-    if (isNaN(+id)) {
-      errors.errorsMessages.push(idIncorrect)
+    if (title.length < 4 || title.length > 40) {
+      errors.errorsMessages.push(titleHasIncorrect)
     }
     return {
       data: {
