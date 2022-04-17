@@ -15,19 +15,19 @@ type ArrayType = {
   "errorsMessages": Array<ErrorType>
 }
 
-const idDoesNotExist = {
+const idDoesNotExist: ErrorType = {
   message: "such an id does not exist",
   field: "id"
 }
-const idIncorrect = {
+const idIncorrect: ErrorType = {
   message: "such an id has incorrect values",
   field: "id"
 }
-const titleHasIncorrect = {
+const titleHasIncorrect: ErrorType = {
   message: "input title has incorrect values",
   field: "title"
 }
-const authorHasIncorrect = {
+const authorHasIncorrect: ErrorType = {
   message: "Bad input new author has incorrect values",
   field: "new author"
 }
@@ -59,6 +59,12 @@ export const videosRepository = {
   updateVideoById(id: string, title: string) {
     const video = videos.find(v => v.id === +id)
     const errors: ArrayType = {errorsMessages: []};
+    let currentAuthor;
+
+    if (video) {
+      currentAuthor = video.author
+    }
+    console.log("--", title.length < 4, title.length > 40, currentAuthor)
 
     if (video && title.length >= 4 && title.length <= 40) {
       video.title = title
@@ -75,7 +81,8 @@ export const videosRepository = {
     return {
       data: {
         id: id,
-        title: title
+        title: title,
+        author: currentAuthor
       },
       errorsMessages: errors.errorsMessages,
       "resultCode": 1

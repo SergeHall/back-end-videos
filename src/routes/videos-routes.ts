@@ -42,19 +42,17 @@ videosRouter.get('/', (req: Request, res: Response) => {
         return
       } else {
         for (let key in updateVideo) {
-          if (updateVideo.errorsMessages.length > 0) {
-            for (let k in updateVideo.errorsMessages) {
-              if (updateVideo.errorsMessages[k].message === 'such an id does not exist') {
-                res.status(404);
-                res.send(updateVideo);
-                return;
-              }
-              if (updateVideo.errorsMessages[k].message === 'such an id has incorrect values' ||
-                updateVideo.errorsMessages[k].message === 'input title has incorrect values') {
-                res.status(400);
-                res.send(updateVideo);
-                return;
-              }
+          for (let k in updateVideo.errorsMessages) {
+            if (updateVideo.errorsMessages[k].message === 'such an id does not exist') {
+              res.status(404);
+              res.send(updateVideo);
+              return;
+            }
+            if (updateVideo.errorsMessages[k].message === 'such an id has incorrect values' ||
+              updateVideo.errorsMessages[k].message === 'input title has incorrect values') {
+              res.status(400);
+              res.send(updateVideo);
+              return;
             }
           }
         }
@@ -73,7 +71,7 @@ videosRouter.get('/', (req: Request, res: Response) => {
         res.status(404)
         res.send(video);
         return
-      }else {
+      } else {
         res.status(200);
         res.send(video);
         return
@@ -88,8 +86,8 @@ videosRouter.get('/', (req: Request, res: Response) => {
     const isDeleted = videosRepository.deleteVideoById(id)
 
     if (isDeleted) {
-      res.status(204).send()
+      res.sendStatus(204)
     } else {
-      res.status(404).send()
+      res.sendStatus(404)
     }
   })
