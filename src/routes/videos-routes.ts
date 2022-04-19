@@ -10,20 +10,19 @@ videosRouter.get('/', (req: Request, res: Response) => {
 
   .post('/', (req: Request, res: Response) => {
     try {
-      const id = +(new Date());
       const title = req.body.title;
-      const author = req.body.author;
-      const createVideo = videosRepository.createVideo(id, title, author)
+      const createVideo = videosRepository.createVideo(title);
 
-      if (createVideo.hasOwnProperty("errorsMessages")) {
-        res.status(400)
-        res.send(createVideo);
-        return
-      }
-      if (createVideo) {
+      console.log(createVideo, createVideo.errorsMessages.length)
+
+      if (createVideo && createVideo.errorsMessages.length === 0) {
         res.status(201);
-        res.send(createVideo);
-        return
+        res.send(createVideo.data);
+      } else {
+        res.status(400)
+        const errorsMessages = createVideo.errorsMessages
+        const resultCode = createVideo.resultCode
+        res.send({errorsMessages, resultCode})
       }
     } catch (error) {
       return res.sendStatus(500)
@@ -32,26 +31,26 @@ videosRouter.get('/', (req: Request, res: Response) => {
 
   .put('/:videoId', (req: Request, res: Response) => {
     try {
-      const id = req.params.videoId;
+      const id = +req.params.videoId;
       const title = req.body.title;
       let updateVideo = videosRepository.updateVideoById(id, title)
+
       if (updateVideo.errorsMessages.length === 0) {
         res.status(204);
-        res.send(updateVideo);
-        return
+        res.send();
       } else {
-        for (let k in updateVideo.errorsMessages) {
-          if (updateVideo.errorsMessages[k].message === 'such an id does not exist') {
-            res.status(404);
-            res.send(updateVideo);
-            return;
-          }
-          if (updateVideo.errorsMessages[k].message === 'such an id has incorrect values' ||
-            updateVideo.errorsMessages[k].message === 'input title has incorrect values') {
-            res.status(400);
-            res.send(updateVideo);
-            return;
-          }
+        if (updateVideo.errorsMessages[0].field === "id") {
+          res.status(404)
+          res.send({
+            "id": {"errors": updateVideo.errorsMessages[0]}
+          })
+        }
+        if (updateVideo.errorsMessages[0].field === "title") {
+          res.status(400)
+          res.send({
+            "errorsMessages": updateVideo.errorsMessages[0],
+            "resultCode": updateVideo.resultCode
+          })
         }
       }
     } catch (error) {
@@ -64,17 +63,15 @@ videosRouter.get('/', (req: Request, res: Response) => {
       const id = +req.params.videoId;
       const video = videosRepository.getVideoById(id)
 
-      if (video.hasOwnProperty("errorsMessages")) {
-        res.status(404)
-        res.send(video);
-        return
-      } else {
+      if (video.errorsMessages.length === 0) {
         res.status(200);
-        res.send(video);
-        return
+        res.send(video.data);
+      } else {
+        res.status(404)
+        res.send();
       }
     } catch (error) {
-      return res.sendStatus(500)
+      res.sendStatus(500)
     }
   })
 

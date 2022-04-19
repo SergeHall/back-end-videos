@@ -8,28 +8,20 @@ let videos = [
 
 
 type ErrorType = {
-  "message": string
-  "field": string
+  message: string
+  field: string
 }
 type ArrayType = {
-  "errorsMessages": Array<ErrorType>
+  errorsMessages: Array<ErrorType>
 }
 
 const idDoesNotExist: ErrorType = {
   message: "such an id does not exist",
   field: "id"
 }
-const idIncorrect: ErrorType = {
-  message: "such an id has incorrect values",
-  field: "id"
-}
 const titleHasIncorrect: ErrorType = {
   message: "input title has incorrect values",
   field: "title"
-}
-const authorHasIncorrect: ErrorType = {
-  message: "Bad input new author has incorrect values",
-  field: "new author"
 }
 
 export const videosRepository = {
@@ -39,88 +31,68 @@ export const videosRepository = {
 
   getVideoById(id: number) {
     const video = videos.find(v => v.id === id)
+    const errors: ArrayType = {errorsMessages: []};
 
-    if (video) {
-      return video;
-    } else {
-      const errors: ArrayType = {errorsMessages: []};
-
+    if (!video) {
       errors.errorsMessages.push(idDoesNotExist)
-      return {
-        "data": {
-          "id": id,
-        },
-        "errorsMessages": errors.errorsMessages,
-        "resultCode": 1
-      }
+    }
+    return {
+      data: video,
+      errorsMessages: errors.errorsMessages,
     }
   },
 
-  updateVideoById(id: string, title: string) {
-    const video = videos.find(v => v.id === +id)
+  updateVideoById(id: number, title: string) {
+    const updatedVideo = videos.find(v => v.id === id)
     const errors: ArrayType = {errorsMessages: []};
-    let currentAuthor = "";
+    let resultCode = 0
 
-    if (video) {
-      currentAuthor = video.author
+    if (updatedVideo && title.length < 40) {
+      updatedVideo.title = title
     }
-
-    if (video && title.length >= 4 && title.length <= 40) {
-      video.title = title
-    }
-    if (isNaN(+id)) {
-      errors.errorsMessages.push(idIncorrect)
-    }
-    if (!video && !isNaN(+id)) {
+    if (!updatedVideo) {
       errors.errorsMessages.push(idDoesNotExist)
     }
-    if (title.length < 4 || title.length > 40) {
+    if (title.length > 40) {
       errors.errorsMessages.push(titleHasIncorrect)
     }
     return {
-      data: {
-        id: id,
-        title: title,
-        author: currentAuthor
-      },
+      data: updatedVideo,
       errorsMessages: errors.errorsMessages,
-      "resultCode": 1
+      resultCode: resultCode
     }
   },
 
-  createVideo(id: number, title: string, author: string) {
-    const video = videos.find(v => v.id === id)
-    const errors: ArrayType = {errorsMessages: []};
-    let errFlag = false;
+  createVideo(title: string) {
 
-    if (video) {
-      errFlag = true;
-      errors.errorsMessages.push(idDoesNotExist)
+    let errFlag = false;
+    let resultCode = 0
+    const errors: ArrayType = {errorsMessages: []};
+
+    const author = title;
+    // create new unique id
+    let newId = +(new Date());
+    let count = 0;
+    while (count < 50 && videos.find(i => i.id === newId)) {
+      newId = +(new Date());
+      count++
     }
-    if (title.length < 4 || title.length > 40) {
+    const newAuthor = {
+      id: newId,
+      title: title,
+      author: author
+    }
+
+    if (title.length > 40) {
       errFlag = true;
+      resultCode = 0
       errors.errorsMessages.push(titleHasIncorrect)
     }
-    if (author.length < 4 || author.length > 40) {
-      errFlag = true;
-      errors.errorsMessages.push(authorHasIncorrect)
-    }
 
-    if (errFlag) {
-      return {
-        "data": {
-          "id": id,
-          "title": title,
-          "author": author
-        },
-        errorsMessages: errors.errorsMessages,
-        "resultCode": 1
-      }
-
-    } else {
-      const newVideo = {id: +id, title: title, author: author}
-      videos.push(newVideo)
-      return newVideo;
+    return {
+      "data": newAuthor,
+      "errorsMessages": errors.errorsMessages,
+      "resultCode": resultCode
     }
   },
 
