@@ -88,6 +88,9 @@ export const videosRepository = {
       resultCode = 0
       errors.errorsMessages.push(titleHasIncorrect)
     }
+    if (errors.errorsMessages.length === 0 && isNaN(newId)) {
+      videos.push(newAuthor)
+    }
 
     return {
       "data": newAuthor,
