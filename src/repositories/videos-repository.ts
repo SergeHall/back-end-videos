@@ -47,14 +47,14 @@ export const videosRepository = {
     const errors: ArrayType = {errorsMessages: []};
     let resultCode = 0
 
-    if (updatedVideo && title.length < 40) {
+    if (updatedVideo && title.length > 0 && title.length < 40) {
       updatedVideo.title = title
     }
     if (!updatedVideo) {
       errors.errorsMessages.push(idDoesNotExist)
       resultCode = 1
     }
-    if (title.length > 40) {
+    if (title.length <= 0 || title.length > 40) {
       errors.errorsMessages.push(titleHasIncorrect)
       resultCode = 1
     }
@@ -85,7 +85,7 @@ export const videosRepository = {
       author: author
     }
 
-    if (title.length > 40) {
+    if (title.length <= 0 || title.length > 40) {
       errFlag = true;
       resultCode = 1
       errors.errorsMessages.push(titleHasIncorrect)
