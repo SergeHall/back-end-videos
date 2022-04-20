@@ -12,7 +12,7 @@ videosRouter.get('/', (req: Request, res: Response) => {
     try {
       const title = req.body.title;
       const createVideo = videosRepository.createVideo(title);
-      if (createVideo.data) {
+      if (createVideo.data && createVideo) {
         res.status(201);
         res.send(createVideo.data);
       } else {
@@ -32,8 +32,7 @@ videosRouter.get('/', (req: Request, res: Response) => {
       const title = req.body.title;
       let updateVideo = videosRepository.updateVideoById(id, title)
 
-      console.log(updateVideo)
-      if (updateVideo.resultCode === 0) {
+      if (updateVideo.resultCode === 0 && updateVideo) {
         res.status(204);
         res.send();
       } else {
