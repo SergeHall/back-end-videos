@@ -66,7 +66,13 @@ export const videosRepository = {
   },
 
   createVideo(title: string) {
-
+    console.log("title", title)
+    if (!title) {
+      return {
+        errorsMessages: titleHasIncorrect,
+        resultCode: 1
+      }
+    }
     let errFlag = false;
     let resultCode = 0
     const errors: ArrayType = {errorsMessages: []};

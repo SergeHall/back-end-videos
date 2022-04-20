@@ -14,7 +14,7 @@ videosRouter.get('/', (req: Request, res: Response) => {
       const createVideo = videosRepository.createVideo(title);
       const errorsMessages = createVideo.errorsMessages
       const resultCode = createVideo.resultCode
-
+      console.log("createVideo", createVideo)
       if (createVideo && createVideo.resultCode === 0 && createVideo.errorsMessages && createVideo.data) {
         res.status(201);
         res.send(createVideo.data);
