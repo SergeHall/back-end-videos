@@ -52,9 +52,11 @@ export const videosRepository = {
     }
     if (!updatedVideo) {
       errors.errorsMessages.push(idDoesNotExist)
+      resultCode = 1
     }
     if (title.length > 40) {
       errors.errorsMessages.push(titleHasIncorrect)
+      resultCode = 1
     }
     return {
       data: updatedVideo,
@@ -73,7 +75,7 @@ export const videosRepository = {
     // create new unique id
     let newId = +(new Date());
     let count = 0;
-    while (count < 50 && videos.find(i => i.id === newId)) {
+    while (count < 10 && videos.find(i => i.id === newId)) {
       newId = +(new Date());
       count++
     }
@@ -85,17 +87,20 @@ export const videosRepository = {
 
     if (title.length > 40) {
       errFlag = true;
-      resultCode = 0
+      resultCode = 1
       errors.errorsMessages.push(titleHasIncorrect)
     }
     if (errors.errorsMessages.length === 0 && newId) {
       videos.push(newAuthor)
+      return {
+        data: newAuthor,
+        errorsMessages: errors.errorsMessages,
+        resultCode: resultCode
+      }
     }
-
     return {
-      "data": newAuthor,
-      "errorsMessages": errors.errorsMessages,
-      "resultCode": resultCode
+      errorsMessages: errors.errorsMessages,
+      resultCode: resultCode
     }
   },
 
