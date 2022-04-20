@@ -14,7 +14,6 @@ videosRouter.get('/', (req: Request, res: Response) => {
       const createVideo = videosRepository.createVideo(title);
       const errorsMessages = createVideo.errorsMessages
       const resultCode = createVideo.resultCode
-      console.log("createVideo", createVideo)
       if (createVideo && createVideo.resultCode === 0 && createVideo.errorsMessages && createVideo.data) {
         res.status(201);
         res.send(createVideo.data);
@@ -35,8 +34,7 @@ videosRouter.get('/', (req: Request, res: Response) => {
 
       const errorsMessages = updateVideo.errorsMessages;
       const resultCode = updateVideo.resultCode;
-
-      if (Object.keys(updateVideo).length !== 0 && errorsMessages.length == 0) {
+      if (errorsMessages.length === 0) {
         res.status(204);
         res.send();
       } else {

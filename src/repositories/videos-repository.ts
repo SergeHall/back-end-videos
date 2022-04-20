@@ -23,6 +23,10 @@ const titleHasIncorrect: ErrorType = {
   message: "input title has incorrect values",
   field: "title"
 }
+const anEmptyObject: ErrorType = {
+  message: "An empty object was received",
+  field: "an empty object"
+}
 
 export const videosRepository = {
   getVideos() {
@@ -47,6 +51,14 @@ export const videosRepository = {
     const errors: ArrayType = {errorsMessages: []};
     let resultCode = 0
 
+    if (!title) {
+      return {
+        data: {},
+        errorsMessages: [anEmptyObject],
+        resultCode: 1
+      }
+    }
+
     if (updatedVideo && title.length > 0 && title.length < 40) {
       updatedVideo.title = title
     }
@@ -66,18 +78,16 @@ export const videosRepository = {
   },
 
   createVideo(title: string) {
-    console.log("title", title)
     if (!title) {
       return {
-        errorsMessages: titleHasIncorrect,
+        errorsMessages: anEmptyObject,
         resultCode: 1
       }
     }
-    let errFlag = false;
     let resultCode = 0
     const errors: ArrayType = {errorsMessages: []};
-
     const author = title;
+
     // create new unique id
     let newId = +(new Date());
     let count = 0;
@@ -91,8 +101,7 @@ export const videosRepository = {
       author: author
     }
 
-    if (title.length <= 0 || title.length > 40) {
-      errFlag = true;
+    if (title.length > 40) {
       resultCode = 1
       errors.errorsMessages.push(titleHasIncorrect)
     }
