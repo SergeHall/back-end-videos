@@ -15,7 +15,7 @@ videosRouter.get('/', (req: Request, res: Response) => {
       const errorsMessages = createVideo.errorsMessages
       const resultCode = createVideo.resultCode
 
-      if (createVideo) {
+      if (Object.keys(createVideo).length !== 0 && errorsMessages.length === 0) {
         res.status(201);
         res.send(createVideo.data);
       } else {
@@ -32,10 +32,12 @@ videosRouter.get('/', (req: Request, res: Response) => {
       const id = +req.params.videoId;
       const title = req.body.title;
       let updateVideo = videosRepository.updateVideoById(id, title)
+      // console.log("----", Boolean(Object.keys(updateVideo).length === 0), "===",updateVideo, "---")
+
       const errorsMessages = updateVideo.errorsMessages;
       const resultCode = updateVideo.resultCode;
 
-      if (updateVideo) {
+      if (Object.keys(updateVideo).length !== 0 && errorsMessages.length == 0) {
         res.status(204);
         res.send();
       } else {
