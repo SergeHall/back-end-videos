@@ -12,13 +12,10 @@ videosRouter.get('/', (req: Request, res: Response) => {
     try {
       const title = req.body.title;
       const createVideo = videosRepository.createVideo(title);
-
       const errorsMessages = createVideo.errorsMessages
       const resultCode = createVideo.resultCode
 
-      console.log("JSON.stringify(createVideo)", JSON.stringify(createVideo))
-
-      if (!JSON.stringify(createVideo) && errorsMessages.length === 0) {
+      if (Object.keys(createVideo).length !== 0 && errorsMessages.length === 0) {
         res.status(201);
         res.send(createVideo.data);
       } else {
@@ -35,7 +32,6 @@ videosRouter.get('/', (req: Request, res: Response) => {
       const id = +req.params.videoId;
       const title = req.body.title;
       let updateVideo = videosRepository.updateVideoById(id, title)
-      // console.log("----", Boolean(Object.keys(updateVideo).length === 0), "===",updateVideo, "---")
 
       const errorsMessages = updateVideo.errorsMessages;
       const resultCode = updateVideo.resultCode;
