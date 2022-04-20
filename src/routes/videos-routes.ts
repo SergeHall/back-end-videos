@@ -12,12 +12,13 @@ videosRouter.get('/', (req: Request, res: Response) => {
     try {
       const title = req.body.title;
       const createVideo = videosRepository.createVideo(title);
+
       const errorsMessages = createVideo.errorsMessages
       const resultCode = createVideo.resultCode
 
-      console.log()
+      console.log("JSON.stringify(createVideo)", JSON.stringify(createVideo))
 
-      if (Object.keys(createVideo).length !== 0 && errorsMessages.length === 0) {
+      if (!JSON.stringify(createVideo) && errorsMessages.length === 0) {
         res.status(201);
         res.send(createVideo.data);
       } else {
