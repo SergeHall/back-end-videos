@@ -10,6 +10,7 @@ videosRouter.get('/', (req: Request, res: Response) => {
 
   .post('/', (req: Request, res: Response) => {
     try {
+      // new
       const title = req.body.title;
       const createVideo = videosRepository.createVideo(title);
       const errorsMessages = createVideo.errorsMessages
